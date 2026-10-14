@@ -1,5 +1,5 @@
 # dekdev
-- [ ] Build branded animated landing page.
-- [ ] Build storefront with categories, search, product details and cart preview.
-- [ ] Build Cursor-inspired login example and profile page.
-- [ ] Verify navigation, shopping interactions and mobile layout.
+- [x] Build branded animated landing page.
+- [x] Build storefront with categories, search, product details and cart preview.
+- [x] Build Cursor-inspired login example and profile page.
+- [x] Verify navigation, shopping interactions and mobile layout.
