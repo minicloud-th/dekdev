@@ -1,0 +1,16 @@
+import { createContext, useContext, useState, type ReactNode } from 'react';
+import { Link } from '@tanstack/react-router';
+import { ShoppingBag, Minus, Plus, Trash2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
+import { money, type Product } from '@/lib/products';
+type CartItem = {product:Product; quantity:number};
+type StoreState = {items:CartItem[]; add:(product:Product)=>void; openCart:()=>void; count:number};
+const StoreContext = createContext<StoreState | undefined>(undefined);
+export function useStore() { const state=useContext(StoreContext); if(!state) throw new Error('StoreProvider is required'); return state; }
+export function StoreProvider({children}:{children:ReactNode}) {
+ const [items,setItems]=useState<CartItem[]>([]);const [open,setOpen]=useState(false);
+ const add=(product:Product)=>{setItems(old=>old.some(x=>x.product.id===product.id)?old.map(x=>x.product.id===product.id?{...x,quantity:x.quantity+1}:x):[...old,{product,quantity:1}]);setOpen(true);};
+ const update=(id:string,delta:number)=>setItems(old=>old.map(x=>x.product.id===id?{...x,quantity:x.quantity+delta}:x).filter(x=>x.quantity>0));
+ return <StoreContext.Provider value={{items,add,openCart:()=>setOpen(true),count:items.reduce((n,x)=>n+x.quantity,0)}}>{children}<Sheet open={open} onOpenChange={setOpen}><SheetContent className="flex flex-col"><SheetHeader><SheetTitle>ตะกร้าสินค้า</SheetTitle><SheetDescription>สินค้าดิจิทัลที่คุณเลือก</SheetDescription></SheetHeader>{items.length===0?<div className="empty-state"><ShoppingBag/><p className="text-sm">ตะกร้าของคุณยังว่างอยู่</p><Button asChild className="mt-5" onClick={()=>setOpen(false)}><Link to="/shop" search={{category:'all'}}>เลือกสินค้า</Link></Button></div>:<><div className="flex-1 overflow-auto px-4">{items.map(({product,quantity})=><div key={product.id} className="flex gap-3 border-b border-border py-5"><img src={product.image} alt={product.name} className="h-16 w-16 rounded-md object-cover"/><div className="min-w-0 flex-1"><h3 className="text-xs font-semibold">{product.name}</h3><p className="mt-1 text-xs text-primary">{money(product.price)}</p><div className="mt-2 flex items-center gap-2"><Button variant="ghost" size="icon" className="h-6 w-6" aria-label={`ลดจำนวน ${product.name}`} onClick={()=>update(product.id,-1)}><Minus/></Button><span className="text-xs">{quantity}</span><Button variant="ghost" size="icon" className="h-6 w-6" aria-label={`เพิ่มจำนวน ${product.name}`} onClick={()=>update(product.id,1)}><Plus/></Button></div></div><Button variant="ghost" size="icon" aria-label={`ลบ ${product.name}`} onClick={()=>setItems(old=>old.filter(x=>x.product.id!==product.id))}><Trash2/></Button></div>)}</div><div className="border-t border-border p-4"><div className="mb-4 flex justify-between text-sm font-semibold"><span>รวมทั้งหมด</span><span>{money(items.reduce((n,x)=>n+x.quantity*x.product.price,0))}</span></div><p className="mb-4 text-xs leading-relaxed text-muted-foreground">ร้านค้าตัวอย่าง — ยังไม่เปิดรับชำระเงิน สินค้าและราคาใช้เพื่อแสดงตัวอย่าง</p><Button className="w-full" variant="outline" onClick={()=>setOpen(false)}>เลือกสินค้าต่อ</Button></div></>}</SheetContent></Sheet></StoreContext.Provider>;
+}
