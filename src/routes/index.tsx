@@ -1,24 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
-
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
-export const Route = createFileRoute("/")({
-  component: Index,
-});
-
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
-  return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
-  );
-}
+import { createFileRoute, Link } from '@tanstack/react-router';
+import { ArrowRight, ArrowUpRight, Gamepad2, Code2, Layers3, ShieldCheck, Download, Sparkles } from 'lucide-react';
+import { SiteShell } from '@/components/site-shell';
+import { Button } from '@/components/ui/button';
+import { ProductCard } from '@/components/product-card';
+import { categories, products, pageHead } from '@/lib/products';
+import digitalWorld from '@/assets/digital-world.jpg';
+export const Route=createFileRoute('/')({head:()=>pageHead('Play. Build. Beyond.','dekdev สินค้าเกม โค้ด และดิจิทัลแอสเซ็ต สำหรับคนที่ไม่หยุดสร้างสรรค์'),component:Index});
+function Index(){const icons=[Gamepad2,Code2,Layers3];return <SiteShell><div className="announcement"><Sparkles size={12}/><span>โลกของเกม และไอเดียใหม่ ๆ เริ่มต้นที่นี่</span><Link to="/shop" search={{category:'all'}} className="inline-flex items-center gap-1 font-semibold">สำรวจ dekdev <ArrowRight size={11}/></Link></div><main><section className="landing-hero"><div className="hero-grid"/><div className="hero-copy"><div className="eyebrow"><span className="status-dot"/> FOR PLAYERS. FOR BUILDERS. FOR YOU.</div><h1 className="hero-title" aria-label="dekdev.">{'dekdev.'.split('').map((letter,index)=><span aria-hidden="true" key={index}>{letter}</span>)}</h1><h2 className="hero-subtitle">เล่นให้สุด สร้างให้เหนือกว่า</h2><p className="hero-description">สินค้าเกม โค้ด และดิจิทัลแอสเซ็ตที่คัดมาเพื่อคุณ<br/>ปลดล็อกโลกการเล่น และไอเดียที่เป็นไปได้ไม่สิ้นสุด</p><div className="hero-ctas"><Button asChild variant="hero" className="h-11 px-6 text-xs"><Link to="/shop" search={{category:'all'}}>สำรวจร้านค้า <ArrowUpRight/></Link></Button><Button asChild variant="pill" className="h-11 px-5 text-xs"><Link to="/shop" search={{category:'code'}}><Code2/> สำหรับนักพัฒนา</Link></Button></div></div><div className="hero-art"><img src={digitalWorld} alt="จอยเกมสีน้ำเงินและคริสตัลโค้ด เชื่อมโลกของการเล่นและการสร้างสรรค์" width={1920} height={768} fetchPriority="high"/><div className="art-caption">PLAY. BUILD. BEYOND.</div></div></section><div className="trust-bar"><div className="site-container trust-content"><span><ShieldCheck/> คัดสรรเพื่อคนรักเกม</span><span><Download/> สินค้าในรูปแบบดิจิทัล</span><span><Code2/> สร้างสรรค์ได้ในแบบคุณ</span><span><Sparkles/> อัปเลเวลทุกไอเดีย</span></div></div><section className="site-container py-12"><div className="section-heading"><div><p className="section-label">FIND YOUR NEXT LEVEL</p><h2 className="section-title">โลกของคุณ เลือกได้เอง</h2></div><span className="hidden text-xs text-muted-foreground sm:block">จากเกมที่ชอบ สู่สิ่งที่อยากสร้าง</span></div><div className="category-row">{categories.slice(1).map((category,index)=>{const Icon=icons[index]??Code2;return <Link key={category.id} to="/shop" search={{category:category.id}} className="category-link"><div className="flex items-center gap-4"><span className="category-icon"><Icon size={23}/></span><div><h3 className="text-sm font-semibold">{category.name}</h3><p className="mt-1 text-[10px] text-muted-foreground">{category.english}</p></div></div><ArrowUpRight size={17}/></Link>;})}</div></section><section className="site-container pb-14"><div className="section-heading"><div><p className="section-label">CURATED FOR YOU</p><h2 className="section-title">ของดี ที่อยากให้ลอง</h2></div><Button variant="link" asChild className="px-0 text-xs"><Link to="/shop" search={{category:'all'}}>ดูสินค้าทั้งหมด <ArrowRight/></Link></Button></div><div className="product-grid">{products.map(product=><ProductCard key={product.id} product={product}/>)}</div><p className="mt-3 text-[10px] text-muted-foreground">สินค้าและราคาเป็นตัวอย่างสำหรับการแสดงผล</p></section><section className="creator-band"><div className="site-container creator-content"><div><p className="mb-3 text-[10px] text-night-muted">BUILT FOR YOUR NEXT BIG IDEA</p><h2 className="creator-title">ไอเดียของคุณ<br/>ไปได้ไกลกว่าที่คิด<span className="text-primary">.</span></h2><Button asChild variant="hero" className="mt-6 px-6"><Link to="/shop" search={{category:'code'}}>เริ่มสร้างสรรค์ <ArrowUpRight/></Link></Button></div><span className="creator-code" aria-hidden="true">&lt; / &gt;</span></div></section></main></SiteShell>;}
